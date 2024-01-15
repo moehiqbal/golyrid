@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: golang-app
+  template:
+    metadata:
+      labels:
+        app: golang-app
+    spec:
+      containers:
+      - name: golang-app
+        image: iqbal482/golyrid:0.1 
+        ports:
+        - containerPort: 8080
+        command:
+        - /bin/sh
+        - -c
+        - /app/main
+
