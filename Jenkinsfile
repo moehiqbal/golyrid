@@ -12,6 +12,8 @@ pipeline {
         GITHUB_REPO_URL = "https://github.com/moehiqbal/golyrid.git"
         GIT_CREDENTIALS_ID = "github-credentials"
         KUBECONFIG_CREDENTIALS_ID = "kubeconfig-credentials"
+        DOCKER_HUB_CREDENTIALS_ID = "docker-hub-credentials"
+
     }
 
     stages {
@@ -25,13 +27,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    try {
-                        // Add a try-catch block to capture errors during the build
-                        docker.build("${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV}")
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error("Failed to build Docker image: ${e.message}")
-                    }
+                    sh "docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV} ."
                 }
             }
         }
@@ -39,19 +35,14 @@ pipeline {
         stage('Push to Docker Registry') {
             steps {
                 script {
-                    try {
-                        // Add a try-catch block to capture errors during the push
-                        docker.withRegistry("${DOCKER_REGISTRY}", 'docker-hub-credentials') {
-                            docker.image("${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV}").push()
-                        }
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error("Failed to push Docker image: ${e.message}")
+                    withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS_ID, usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                        sh "docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}"
+                        sh "docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV}"
                     }
                 }
             }
         }
-        
+
         stage('Deploy to Kubernetes') {
             steps {
                 script {
