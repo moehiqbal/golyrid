@@ -6,7 +6,7 @@ pipeline {
         DOCKER_REGISTRY = "docker.io"
         DOCKER_REPO = "iqbal482/golyrid"
         KUBE_NAMESPACE = "golyrid"
-        KUBE_DEPLOYMENT_NAME = "golyrid"
+        KUBE_DEPLOYMENT_NAME = "golang-app"
         KUBE_CONTEXT = "jenkins-context"
         BUILD_NUMBER_ENV = "${BUILD_NUMBER}"
         GITHUB_REPO_URL = "https://github.com/moehiqbal/golyrid.git"
