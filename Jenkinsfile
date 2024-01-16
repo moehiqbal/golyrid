@@ -5,7 +5,7 @@ pipeline {
         // Define environment variables
         DOCKER_REGISTRY = "docker.io"
         DOCKER_REPO = "iqbal482/golyrid"
-        KUBE_NAMESPACE = "apps"
+        KUBE_NAMESPACE = "golyrid"
         KUBE_DEPLOYMENT_NAME = "golyrid"
         KUBE_CONTEXT = "jenkins-context"
         BUILD_NUMBER_ENV = "${BUILD_NUMBER}"
