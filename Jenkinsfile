@@ -92,13 +92,13 @@ pipeline {
                     // Install kubectl and deploy to Kubernetes
                     withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG_FILE')]) {
                         sh "cat /etc/os-release"
-                        sh "apt-get update"
-                        sh "apt-get install -y apt-transport-https ca-certificates curl"
+                        sh "sudo apt-get update"
+                        sh "sudo apt-get install -y apt-transport-https ca-certificates curl"
                         sh "sudo mkdir -m 755 /etc/apt/keyrings"
                         sh "curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg"
                         sh "echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.27/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list"
-                        sh "apt-get update"
-                        sh "apt-get install kubectl -y"
+                        sh "sudo apt-get update"
+                        sh "sudo apt-get install kubectl -y"
                         sh "kubectl --kubeconfig=${KUBECONFIG_FILE} config use-context ${KUBE_CONTEXT}"
                         sh "kubectl --kubeconfig=${KUBECONFIG_FILE} set image deployment/${KUBE_DEPLOYMENT_NAME} ${KUBE_DEPLOYMENT_NAME}=${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV} -n ${KUBE_NAMESPACE}"
                     }
