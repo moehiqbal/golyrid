@@ -43,7 +43,7 @@ pipeline {
         GITHUB_REPO = "moehiqbal/golyrid"
         GIT_CREDENTIALS_ID = "github-credentials"
         DOCKER_HUB_CREDENTIALS_ID = "docker-registry-credentials"
-        KUBECONFIG_CREDENTIALS_ID = "kubeconfig-credentials"
+        KUBECONFIG_CREDENTIALS_ID = "kubeconfig-new"
     }
 
     stages {
@@ -91,16 +91,10 @@ pipeline {
                 script {
                     // Install kubectl and deploy to Kubernetes
                     withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG_FILE')]) {
-                        sh "cat /etc/os-release"
-                        sh "sudo apt-get update"
-                        sh "sudo apt-get install -y apt-transport-https ca-certificates curl"
-                        sh "sudo mkdir -m 755 /etc/apt/keyrings"
-                        sh "curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg"
-                        sh "echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.27/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list"
-                        sh "sudo apt-get update"
-                        sh "sudo apt-get install kubectl -y"
-                        sh "kubectl --kubeconfig=${KUBECONFIG_FILE} config use-context ${KUBE_CONTEXT}"
-                        sh "kubectl --kubeconfig=${KUBECONFIG_FILE} set image deployment/${KUBE_DEPLOYMENT_NAME} ${KUBE_DEPLOYMENT_NAME}=${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV} -n ${KUBE_NAMESPACE}"
+                        container('kubectl') {
+                            sh "kubectl --kubeconfig=${KUBECONFIG_FILE} config use-context ${KUBE_CONTEXT}"
+                            sh "kubectl --kubeconfig=${KUBECONFIG_FILE} set image deployment/${KUBE_DEPLOYMENT_NAME} ${KUBE_DEPLOYMENT_NAME}=${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV} -n ${KUBE_NAMESPACE}"
+                        }
                     }
                 }
             }
