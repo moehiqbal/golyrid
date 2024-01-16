@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent:
+        image: docker:dind
+        privileged: true
 
     environment {
         // Define environment variables
@@ -31,7 +33,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "cd /tmp ${DOCKER_REPO}"
+                    sh "cd ${DOCKER_REPO}"
                     sh "docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV} ."
                 }
             }
