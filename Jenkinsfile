@@ -19,10 +19,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Use specified Git credentials for the repository
-                git url: GITHUB_REPO_URL, credentialsId: GIT_CREDENTIALS_ID
+                script {
+                    withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                        sh "git clone ${GITHUB_REPO_URL} ."
+                    }
+                }
             }
         }
+
 
         stage('Build Docker Image') {
             steps {
