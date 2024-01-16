@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
-                        sh "git clone ${GITHUB_REPO_URL} ."
+                        sh "git clone ${GITHUB_REPO_URL} /tmp"
                     }
                 }
             }
@@ -31,6 +31,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    sh "cd /tmp ${DOCKER_REPO}"
                     sh "docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV} ."
                 }
             }
