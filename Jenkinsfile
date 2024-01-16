@@ -1,7 +1,5 @@
 pipeline {
-    agent:
-        image: docker:dind
-        privileged: true
+    agent any
 
     environment {
         // Define environment variables
@@ -54,6 +52,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'your-kubeconfig-credentials-id', variable: 'KUBECONFIG_FILE')]) {
+                        sh "apk --no-cache add kubectl"
                         sh "kubectl --kubeconfig=${KUBECONFIG_FILE} config use-context ${KUBE_CONTEXT}"
                         sh "kubectl --kubeconfig=${KUBECONFIG_FILE} set image deployment/${KUBE_DEPLOYMENT_NAME} ${KUBE_DEPLOYMENT_NAME}=${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV} -n ${KUBE_NAMESPACE}"
                     }
