@@ -47,44 +47,44 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                script {
-                    // Clone the GitHub repository using credentials
-                    withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
-                        sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GITHUB_REPO}.git"
-                    }
-                }
-            }
-        }
+        // stage('Checkout') {
+        //     steps {
+        //         script {
+        //             // Clone the GitHub repository using credentials
+        //             withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+        //                 sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GITHUB_REPO}.git"
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Build Docker Image') {
-            steps {
-                container('docker') {
-                    script {
-                        // Change to the Docker repository directory
-                        dir("${DOCKER_REPO}") {
-                            // Build Docker image
-                            sh "docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV} ."
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         container('docker') {
+        //             script {
+        //                 // Change to the Docker repository directory
+        //                 dir("${DOCKER_REPO}") {
+        //                     // Build Docker image
+        //                     sh "docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV} ."
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Push to Docker Registry') {
-            steps {
-                container('docker') {
-                    script {
-                        // Log in to Docker Hub and push the image
-                        withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS_ID, usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
-                            sh "docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}"
-                            sh "docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV}"
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Push to Docker Registry') {
+        //     steps {
+        //         container('docker') {
+        //             script {
+        //                 // Log in to Docker Hub and push the image
+        //                 withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS_ID, usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+        //                     sh "docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}"
+        //                     sh "docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV}"
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Deploy to Kubernetes') {
             steps {
