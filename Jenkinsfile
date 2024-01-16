@@ -19,6 +19,11 @@ pipeline {
                     volumeMounts:
                     - mountPath: /var/run/docker.sock
                       name: docker-sock
+                  - name: kubectl
+                    image: lachlanevenson/k8s-kubectl
+                    command:
+                    - cat
+                    tty: true
                   volumes:
                   - name: docker-sock
                     hostPath:
@@ -83,13 +88,13 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                container('agent') {
-                    script {
-                        // Install kubectl and deploy to Kubernetes
-                        withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG_FILE')]) {
-                            sh "kubectl --kubeconfig=${KUBECONFIG_FILE} config use-context ${KUBE_CONTEXT}"
-                            sh "kubectl --kubeconfig=${KUBECONFIG_FILE} set image deployment/${KUBE_DEPLOYMENT_NAME} ${KUBE_DEPLOYMENT_NAME}=${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV} -n ${KUBE_NAMESPACE}"
-                        }
+                script {
+                    // Install kubectl and deploy to Kubernetes
+                    withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG_FILE')]) {
+                        sh "/bin/sh -c apk add --no-cache"
+                        sh "/bin/sh -c apk --no-cache add kubectl"
+                        sh "kubectl --kubeconfig=${KUBECONFIG_FILE} config use-context ${KUBE_CONTEXT}"
+                        sh "kubectl --kubeconfig=${KUBECONFIG_FILE} set image deployment/${KUBE_DEPLOYMENT_NAME} ${KUBE_DEPLOYMENT_NAME}=${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV} -n ${KUBE_NAMESPACE}"
                     }
                 }
             }
