@@ -25,7 +25,13 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV}")
+                    try {
+                        // Add a try-catch block to capture errors during the build
+                        docker.build("${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV}")
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("Failed to build Docker image: ${e.message}")
+                    }
                 }
             }
         }
@@ -33,13 +39,19 @@ pipeline {
         stage('Push to Docker Registry') {
             steps {
                 script {
-                    docker.withRegistry("${DOCKER_REGISTRY}", 'docker-registry-credentials') {
-                        docker.image("${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV}").push()
+                    try {
+                        // Add a try-catch block to capture errors during the push
+                        docker.withRegistry("${DOCKER_REGISTRY}", 'docker-hub-credentials') {
+                            docker.image("${DOCKER_REGISTRY}/${DOCKER_REPO}:${BUILD_NUMBER_ENV}").push()
+                        }
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("Failed to push Docker image: ${e.message}")
                     }
                 }
             }
         }
-
+        
         stage('Deploy to Kubernetes') {
             steps {
                 script {
