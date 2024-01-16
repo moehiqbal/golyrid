@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: golang-app
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: golang-app
@@ -14,11 +14,31 @@ spec:
     spec:
       containers:
       - name: golang-app
-        image: iqbal482/golyrid:0.1 
+        image: iqbal482/golyrid:41 
         ports:
         - containerPort: 8080
         command:
         - /bin/sh
         - -c
         - /app/main
+        resources:
+          requests:
+            memory: "5Mi"
+            cpu: "5m"
+          limits:
+            memory: "8Mi"
+            cpu: "8m"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+
 
