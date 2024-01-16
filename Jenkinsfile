@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         // Define environment variables
-        DOCKER_REGISTRY = "docker.io"
-        DOCKER_REPO = "iqbal482/golyrid"
+        DOCKER_REGISTRY = "iqbal482"
+        DOCKER_REPO = "golyrid"
         KUBE_NAMESPACE = "golyrid"
         KUBE_DEPLOYMENT_NAME = "golang-app"
         KUBE_CONTEXT = "jenkins-context"
