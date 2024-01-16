@@ -37,7 +37,7 @@ pipeline {
         GITHUB_REPO_URL = "https://github.com/moehiqbal/golyrid.git"
         GITHUB_REPO = "moehiqbal/golyrid"
         GIT_CREDENTIALS_ID = "github-credentials"
-        DOCKER_HUB_CREDENTIALS_ID = "docker-hub-credentials"
+        DOCKER_HUB_CREDENTIALS_ID = "docker-registry-credentials"
         KUBECONFIG_CREDENTIALS_ID = "kubeconfig-credentials"
     }
 
