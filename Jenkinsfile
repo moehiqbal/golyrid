@@ -10,6 +10,7 @@ pipeline {
         KUBE_CONTEXT = "jenkins-context"
         BUILD_NUMBER_ENV = "${BUILD_NUMBER}"
         GITHUB_REPO_URL = "https://github.com/moehiqbal/golyrid.git"
+        GITHUB_REPO = "moehiqbal/golyrid"
         GIT_CREDENTIALS_ID = "github-credentials"
         KUBECONFIG_CREDENTIALS_ID = "kubeconfig-credentials"
         DOCKER_HUB_CREDENTIALS_ID = "docker-hub-credentials"
@@ -21,12 +22,11 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
-                        sh "git clone ${GITHUB_REPO_URL}"
+                        sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GITHUB_REPO}.git"
                     }
                 }
             }
         }
-
 
         stage('Build Docker Image') {
             steps {
