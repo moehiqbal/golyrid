@@ -35,7 +35,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY = "iqbal482"
         DOCKER_REPO = "golyrid"
-        KUBE_NAMESPACE = "golyrid"
+        KUBE_NAMESPACE = "default"
         KUBE_DEPLOYMENT_NAME = "golang-app"
         KUBE_CONTEXT = "jenkins-context"
         BUILD_NUMBER_ENV = "${BUILD_NUMBER}"
