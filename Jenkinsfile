@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
-                        sh "git clone ${GITHUB_REPO_URL} /tmp"
+                        sh "git clone ${GITHUB_REPO_URL}"
                     }
                 }
             }
